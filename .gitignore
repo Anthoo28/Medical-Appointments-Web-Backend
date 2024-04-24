@@ -1,0 +1,3 @@
+#Packages ignored by git
+/node_modules
+.env
