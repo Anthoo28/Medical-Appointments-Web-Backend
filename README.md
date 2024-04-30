@@ -14,7 +14,7 @@ This is the backend component of the Medical Appointments Web application. It pr
 
 - Node.js
 - Express.js
-- MySQL
+- MongoDb
 - JWT for authentication
 - SendGrid for email notifications
 - Nodemon for running app
