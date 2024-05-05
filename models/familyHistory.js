@@ -19,7 +19,7 @@ const familyHistorySchema = new Schema({
                 required: true
             }
             ,
-            details:{
+            detail:{
                 type:String,
                 required:true
             }

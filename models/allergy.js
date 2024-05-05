@@ -9,7 +9,7 @@ const allergySchema = new Schema({
         required: true
     },
 
-    allergy:{
+    allergies:[{allergy:{
         type:String,
         required: true
     },
@@ -30,7 +30,7 @@ const allergySchema = new Schema({
         type: String,
         required: true,
         enum: ['Mild', 'Moderate', 'Severe']
-    }
+    }}]
 
 
 });

@@ -30,7 +30,9 @@ const patientSchema = new Schema({
         required: true,
         enum: ["M", "F"],
       },
-    
+      img:{
+        type: String,
+      },
       role: {
         type: String,
         required: true,
