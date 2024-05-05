@@ -8,8 +8,8 @@ const doctorSchema = new Schema({
         required:[true,'DNI is required'],
         unique:true
     },
-    CPM:{
-        type:String,
+    CMP:{
+        type: String,
         required:[true,'CPM is required'],
         unique:true
     },
@@ -20,6 +20,17 @@ const doctorSchema = new Schema({
     lastname:{
         type:String,
         required:[true,'Lastname is required']
+    },
+    email:{
+        type:String,
+        required:[true,'Email is required'],
+        unique:true
+    },
+    role:{
+        type:String,
+        required:true,
+        default:'DOCTOR_ROLE',
+        enum:['ADMIN_ROLE','USER_ROLE','DOCTOR_ROLE']
     },
     password:{
         type:String,
@@ -32,19 +43,29 @@ const doctorSchema = new Schema({
     img:{
         type:String
     },
-    
     phone:{
         type:String,
         required:[true,'Phone is required']
     },
+    
+    specialty:{
+        type:Schema.Types.ObjectId,
+        ref:'Specialty',
+        required:[true,'Specialty is required']
+    },
 
-    username:{
+    address:{
         type:String,
-        required:[true,'Username is required'],
-        unique:true
+        required:[true,'Address is required']
     },
 
 
+});
 
+doctorSchema.methods.toJSON = function(){
+    const{__v,password,dni,...doctor}= this.toObject();
+    doctor.uid=dni;
+    return doctor;
+}
 
-})
+modeule.exports = model('Doctor',doctorSchema);
