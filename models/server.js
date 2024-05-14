@@ -11,7 +11,7 @@ class Server{
 
         this.paths ={
             auth:'api/auth',
-            users:'api/users',
+            user:'/api/user',
         }
 
     //Conectar a base de datos
@@ -20,8 +20,8 @@ class Server{
         //Middlewares
       this.middlewares();
       
-    //   //routes  
-    //   this.routes();
+      //routes  
+      this.routes();
 
     
     }
@@ -53,11 +53,10 @@ class Server{
     }
 
 
-    // routes(){
-    //     this.app.use(this.paths.auth, require('../routes/auth'));
-    //     this.app.use(this.paths.users, require('../routes/user'));
+    routes(){
+        this.app.use(this.paths.user, require('../routes/user'));
 
-    // }
+    }
 
     listen(){
         this.app.listen(this.port,()=>{
