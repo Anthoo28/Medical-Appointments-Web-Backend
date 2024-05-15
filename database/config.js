@@ -10,11 +10,12 @@ const DBConnection= async()=>{
     } catch (error) {
         console.log(error);
         throw new Error('Error initializing database');
+        
     }
-
-
 }
 
 module.exports = {
     DBConnection
 }
+
+
