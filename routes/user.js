@@ -21,7 +21,9 @@ const {
   validatePhone,
   validateEmail,
   validateBornDate,
-  validateGender
+  validateGender,
+  existUserDni,
+  dontExistUserDni
 } = require("../helpers/user-helpers/user-db-validators");
 
 const { requiredFields } = require("../helpers/required/required-fields");
@@ -34,13 +36,14 @@ const router = Router();
 router.get("/", getUsers);
 
 //obtener un usuario por su dni y validarlo
-router.get("/:dni", [validateDNI(), validated], getUserByDni);
+router.get("/:dni", [validateDNI(),dontExistUserDni(), validated], getUserByDni);
 
 //crear un usuario y validarlo
 router.post(
   "/",
   [
     validateDNI(),
+    check('dni', 'The dni already exist').custom(existUserDni),
     validateNotEmpty(requiredFields),
     validateEmail(),
     validatePhone(),
@@ -60,6 +63,7 @@ router.put(
   "/:dni",
   [
     validateDNI(),
+    dontExistUserDni(),
     validatePhone(),
     validateBornDate(),
     validateGender(),
@@ -73,7 +77,8 @@ router.put(
 
 //eliminar un usuario y validarlo
 router.delete("/:dni", [
-  hasRole("ADMIN_ROLE"),
-  validateDNI(), validated], deleteUser);
+  //hasRole("ADMIN_ROLE"),
+  validateDNI(),
+  dontExistUserDni(), validated], deleteUser);
 
 module.exports = router;
