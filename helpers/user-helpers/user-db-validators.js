@@ -6,9 +6,19 @@ const moment = require('moment');
 //validar si el dni ya existe en la base de datos
 const existUserDni=async(dni='')=>{
     const exist= await user.findOne({dni});
-    if(!exist){
-        throw new Error(`Dni ${dni} don't exist in the database`);
+    if(exist){
+        throw new Error(`Dni ${dni} exist in the database`);
     }
+  
+};
+
+//validar si el dni no existe en la base de datos
+const userDni=async(dni='')=>{
+    const exist= await user.findOne({dni});
+    if(!exist){
+        throw new Error(`Dni ${dni} dont exist in the database`);
+    }
+  
 };
 
 //validar dni 
@@ -17,7 +27,7 @@ const validateDNI = () => {
         check('dni', 'The dni is required').not().isEmpty(),
         check('dni', 'The dni must have 8 digits').isLength({ min: 8, max: 8 }),
         check('dni', 'The dni must be a number').isNumeric(),
-        check('dni', 'The dni does not exist').custom(existUserDni),
+      
     ];
 };
 
@@ -38,6 +48,11 @@ const validateEmail = () => {
         check('email', 'The email already exist').custom(existEmail),
     ];
 
+}
+
+//validar si el dni no existe en la base de datos
+const dontExistUserDni = ()=>{
+    return check('dni', 'The dni dont exist').custom(dontExistUserDni);
 }
 
 //validar telefono
@@ -89,5 +104,7 @@ module.exports={
     validateEmail,
     validatePhone,
     validateBornDate,
-    validateGender
+    validateGender,
+    userDni,
+    dontExistUserDni
 }

@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const UserDto = require('../dto/userDto');
+const bcrypt= require('bcrypt')
 
 class UserService {
     constructor() {
@@ -34,7 +35,12 @@ class UserService {
     async createUser(userData){
         try {
             // Crear un nuevo usuario con los datos recibidos
+            const {password, ...rest} = userData;
             const user = new User(userData);
+            //hash password
+            const salt= bcrypt.genSaltSync();
+            user.password= bcrypt.hashSync(password, salt);
+            // Guardar el usuario en la base de datos
             await user.save();
             // Devolver el usuario recién creado como DTO
             return new UserDto(user);
@@ -49,6 +55,12 @@ class UserService {
             const user = await User.findOne({ dni: dni, status: true });
             if (!user) {
                 throw new Error('User not found');
+            }
+            //hash password
+            if(user.password !== userData.password){
+                const salt= bcrypt.genSaltSync();
+                userData.password= bcrypt.hashSync(userData.password, salt);
+
             }
             // Actualizar los datos del usuario
             Object.assign(user, userData);
