@@ -3,10 +3,7 @@ const { Schema, model } = require("mongoose");
 const userSchema = new Schema({
   dni: {
     type: String,
-    required: [true, "DNI is required"],
-    unique: true,
   },
-
   name: {
     type: String,
     required: [true, "Name is required"],
@@ -21,24 +18,19 @@ const userSchema = new Schema({
   },
   bornDate: {
     type: Date,
-    required: [true, "Born date is required"],
   },
   phone: {
     type: String,
-    required: [true, "Phone is required"],
   },
   email: {
     type: String,
-    required: [true, "Email is required"],
     unique: true,
   },
   address: {
     type: String,
-    required: [true, "Address is required"],
   },
   gender: {
     type: String,
-    required: true,
     enum: ["M", "F"],
   },
   img: {
@@ -62,7 +54,7 @@ const userSchema = new Schema({
 
 
 userSchema.methods.toJSON = function () {
-  const { __v, password,dni, ...user } = this.toObject();
+  const { __v, password,dni,email, ...user } = this.toObject();
   user.uid=dni;
   return user;
 };

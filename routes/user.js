@@ -23,11 +23,12 @@ const {
   validateBornDate,
   validateGender,
   existUserDni,
-  dontExistUserDni
+  dontExistUserDni,
 } = require("../helpers/user-helpers/user-db-validators");
 
 const { requiredFields } = require("../helpers/required/required-fields");
 const { hasRole } = require("../middlewares/validated-roles");
+const { validateDNIU, validatePhoneU, validateBornDateU, validateGenderU } = require("../helpers/user-helpers/update");
 
 //instanciar el router
 const router = Router();
@@ -36,20 +37,24 @@ const router = Router();
 router.get("/", getUsers);
 
 //obtener un usuario por su dni y validarlo
-router.get("/:dni", [validateDNI(),dontExistUserDni(), validated], getUserByDni);
+router.get(
+  "/:dni",
+  [validateDNI(), dontExistUserDni(), validated],
+  getUserByDni
+);
 
 //crear un usuario y validarlo
 router.post(
   "/",
   [
     validateDNI(),
-    check('dni', 'The dni already exist').custom(existUserDni),
+    check("dni", "The dni already exist").custom(existUserDni),
     validateNotEmpty(requiredFields),
     validateEmail(),
     validatePhone(),
     validateBornDate(),
     validateGender(),
-    
+
     check("password", "The password must have at least 6 characters").isLength({
       min: 6,
     }),
@@ -62,23 +67,29 @@ router.post(
 router.put(
   "/:dni",
   [
-    validateDNI(),
-    dontExistUserDni(),
-    validatePhone(),
-    validateBornDate(),
-    validateGender(),
+    validateDNIU(),
+    validatePhoneU(),
+    validateBornDateU(),
+    validateGenderU(),
     check("password", "The password must have at least 6 characters").isLength({
       min: 6,
-    }),
-    validated,
+    }).optional(),
+    
   ],
-  updateUser
+  validated,
+  updateUser,
 );
 
 //eliminar un usuario y validarlo
-router.delete("/:dni", [
-  //hasRole("ADMIN_ROLE"),
-  validateDNI(),
-  dontExistUserDni(), validated], deleteUser);
+router.delete(
+  "/:dni",
+  [
+    //hasRole("ADMIN_ROLE"),
+    validateDNI(),
+    dontExistUserDni(),
+    validated,
+  ],
+  deleteUser
+);
 
 module.exports = router;

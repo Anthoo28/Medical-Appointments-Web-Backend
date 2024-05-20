@@ -36,14 +36,14 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-try {
-    //llamar al método del servicio para actualizar un usuario
-    await userService.updateUser(req.params.dni, req.body);
-    res.status(200).json("user updated successfully");
-} catch (error) {
-    res.status(500).json({ error: 'Error updating user' });
-}
+    try {
+        await userService.updateUser(req.params.dni, req.body);
+        res.status(200).json("User updated successfully");
+    } catch (error) {
+        res.status(500).json({ error: 'Error updating user'}); // Enviar el mensaje de error real
+    }
 };
+
 
 const deleteUser = async (req, res) => {
     try {

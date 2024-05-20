@@ -1,6 +1,6 @@
 const User = require('../models/user');
 const UserDto = require('../dto/userDto');
-const bcrypt= require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 class UserService {
     constructor() {
@@ -56,21 +56,23 @@ class UserService {
             if (!user) {
                 throw new Error('User not found');
             }
-            //hash password
-            if(user.password !== userData.password){
-                const salt= bcrypt.genSaltSync();
-                userData.password= bcrypt.hashSync(userData.password, salt);
-
-            }
-            // Actualizar los datos del usuario
-            Object.assign(user, userData);
+            
+            // Actualizar solo los campos presentes en userData
+            for (const [key, value] of Object.entries(userData)) {
+                if (user[key] !== undefined) {
+                    user[key] = value;
+                }
+            }       
+            // Guardar los cambios en la base de datos
             await user.save();
+            
             // Devolver el usuario actualizado como DTO
             return new UserDto(user);
         } catch (error) {
             throw new Error('Error updating user');
         }
     }
+    
 
     async deleteUser(dni){
         try {
