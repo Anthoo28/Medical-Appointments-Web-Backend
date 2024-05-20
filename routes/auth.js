@@ -2,11 +2,12 @@ const { Router } = require('express');
 const { login, googleSignIn,  } = require('../controllers/auth');
 const { validated } = require('../middlewares/validated');
 const { check } = require('express-validator');
+const { validateDNI } = require('../helpers/user-helpers/user-db-validators');
 
 
 const router = Router();
 
-router.post('/login',[check('email',"email obligatorio").isEmail(),
+router.post('/login',[validateDNI(),
 check('password',"passsword obligatorio").not().isEmpty(),
 validated], login);
 
