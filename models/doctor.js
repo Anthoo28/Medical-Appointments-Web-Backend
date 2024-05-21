@@ -48,11 +48,11 @@ const doctorSchema = new Schema({
         required:[true,'Phone is required']
     },
     
-    specialty:{
+    specialty:[{
         type:Schema.Types.ObjectId,
         ref:'Specialty',
         required:[true,'Specialty is required']
-    },
+    }],
 
     address:{
         type:String,

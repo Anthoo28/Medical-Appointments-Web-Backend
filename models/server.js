@@ -12,6 +12,7 @@ class Server{
         this.paths ={
             auth:'/api/auth',
             user:'/api/user',
+            specialty:'/api/specialty',
         }
 
     //Conectar a base de datos
@@ -22,7 +23,7 @@ class Server{
       
       //routes  
       this.routes();
-
+        
     
     }
     async DbConnection(){
@@ -55,8 +56,9 @@ class Server{
 
     routes(){
         this.app.use(this.paths.user, require('../routes/user')),
-        this.app.use(this.paths.auth, require('../routes/auth'))
-
+        this.app.use(this.paths.auth, require('../routes/auth')),
+        this.app.use(this.paths.specialty, require('../routes/specialty'))
+    
     }
 
     listen(){
