@@ -9,7 +9,6 @@ const existUserDni=async(dni='')=>{
     if(exist){
         throw new Error(`Dni ${dni} exist in the database`);
     }
-  
 };
 
 //validar si el dni no existe en la base de datos

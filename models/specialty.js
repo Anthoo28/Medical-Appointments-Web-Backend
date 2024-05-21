@@ -17,12 +17,6 @@ const specialtySchema = new Schema({
         default:true,
         required:true
     },
-    doctor:{
-        type:Schema.Types.ObjectId,
-        ref:'Doctor',
-        required:true
-    }
-    ,
     img:{
         type:String
     }
@@ -30,9 +24,11 @@ const specialtySchema = new Schema({
 });
 
 specialtySchema.methods.toJSON = function(){
-    const{__v,status, ...specialty}=this.toObject();
+    const{__v,status,_id, ...specialty}=this.toObject();
+    specialty.uid=_id;
     return specialty;
 }
+
 
 
 module.exports = model('Specialty',specialtySchema);
