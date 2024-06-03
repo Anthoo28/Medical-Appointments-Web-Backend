@@ -2,72 +2,71 @@ const express = require("express");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const { DBConnection } = require("../database/config");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDoc = require('../swagger-output.json');
+const { userDniU } = require("../helpers/user-helpers/update");
 
-class Server{
-    
-    constructor(){
+class Server {
+    constructor() {
         this.app = express();
         this.port = process.env.PORT;
 
-        this.paths ={
-            auth:'/api/auth',
-            user:'/api/user',
-            specialty:'/api/specialty',
+        this.paths = {
+            user: '/api/user', // Define la ruta base para las rutas de usuario
+            auth: '/api/auth',
+            specialty: '/api/specialty',
+            swagger: '/api-docs'
         }
 
-    //Conectar a base de datos
-    this.DbConnection();
+        // Conectar a base de datos
+        this.DbConnection();
 
-        //Middlewares
-      this.middlewares();
-      
-      //routes  
-      this.routes();
-        
-    
+        // Middlewares
+        this.middlewares();
+
+        // Routes
+        this.routes();
     }
-    async DbConnection(){
+
+    async DbConnection() {
         await DBConnection();
     }
 
-   
-
-    middlewares(){
-
-        //CORS
+    middlewares() {
+        // CORS
         this.app.use(cors());
 
-        //lectura y parseo de body
+        // Lectura y parseo de body
         this.app.use(express.json());
 
-        //directorio publico
-        //para que se pueda acceder a la carpeta publica
-        this.app.use(express.static('public')); 
+        // Directorio público
+        // Para que se pueda acceder a la carpeta publica
+        this.app.use(express.static('public'));
 
-
-        //fileupload - carga de archivos
+        // Fileupload - carga de archivos
         this.app.use(fileUpload({
-            userTempFiles:true,
-            tempFileDir:'/tmp/',
-            createParentPath:true
+            userTempFiles: true,
+            tempFileDir: '/tmp/',
+            createParentPath: true
         }));
     }
 
+    routes() {
 
-    routes(){
-        this.app.use(this.paths.user, require('../routes/user')),
-        this.app.use(this.paths.auth, require('../routes/auth')),
-        this.app.use(this.paths.specialty, require('../routes/specialty'))
-    
+        // Usa la ruta base definida en this.paths.user y concatena las rutas específicas
+        this.app.use('/api/user', require('../routes/user'));
+        this.app.use('/api/auth', require('../routes/auth'));
+        this.app.use('/api/specialty', require('../routes/specialty'));
+        
+        // Configura Swagger en la ruta especificada
+        this.app.use(this.paths.swagger, swaggerUi.serve, swaggerUi.setup(swaggerDoc));
     }
 
-    listen(){
-        this.app.listen(this.port,()=>{
-            console.log(`Server running on port ${this.port} '🚀'` );
+    listen() {
+        this.app.listen(this.port, () => {
+            console.log(`Server running on port ${this.port} '🚀'`);
         });
     }
-
-
 }
 
 module.exports = Server;

@@ -7,6 +7,9 @@ const { validateDNI } = require('../helpers/user-helpers/user-db-validators');
 
 const router = Router();
 
+
+
+
 router.post('/login',[validateDNI(),
 check('password',"passsword obligatorio").not().isEmpty(),
 validated], login);
