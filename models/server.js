@@ -15,6 +15,7 @@ class Server {
             user: '/api/user', // Define la ruta base para las rutas de usuario
             auth: '/api/auth',
             specialty: '/api/specialty',
+            doctor: '/api/doctor',
             swagger: '/api-docs'
         }
 
@@ -57,6 +58,7 @@ class Server {
         this.app.use('/api/user', require('../routes/user'));
         this.app.use('/api/auth', require('../routes/auth'));
         this.app.use('/api/specialty', require('../routes/specialty'));
+        this.app.use('/api/doctor', require('../routes/doctor'));
         
         // Configura Swagger en la ruta especificada
         this.app.use(this.paths.swagger, swaggerUi.serve, swaggerUi.setup(swaggerDoc));

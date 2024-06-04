@@ -1,10 +1,11 @@
 const { generateJWT } = require("../helpers/generate-jwt");
 const { googleVerify } = require("../helpers/google/google-verify");
+const Doctor = require("../models/doctor");
 const User  = require("../models/user");
 const bcrypt = require('bcryptjs');
 
 
-const login= async (req, res) => {
+const loginUser= async (req, res) => {
     const {dni, password} = req.body;
     try {
         //dni existe
@@ -41,6 +42,45 @@ const login= async (req, res) => {
             msg: 'Error trying to login'
         });    
     }
+};
+
+const loginDoctor= async (req, res) => {
+  const {dni, password} = req.body;
+  try {
+      //dni existe
+      const doctor= await Doctor.findOne({dni});
+      if(!doctor){
+          return res.status(400).json({
+              msg: 'Doctor/password are not correct - id'
+          });
+      }
+      //doctor activo
+      if(!doctor.status){
+          return res.status(400).json({
+              msg: 'Doctor/password are not correct - status: false'
+          });
+      }
+      //verificar contraseña
+      const validPassword= bcrypt.compareSync(password, doctor.password);
+      if(!validPassword){
+          return res.status(400).json({
+              msg: 'Doctor/password are not correct - password'
+          });
+      }
+
+      const token= await generateJWT(doctor.dni);
+      res.json({
+        doctor,
+        token
+      });
+  
+      
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({
+          msg: 'Error trying to login'
+      });    
+  }
 };
 
 
@@ -99,6 +139,7 @@ const googleSignIn=async(req=request,res= response)=>{
 
 
   module.exports={
-        login,
-        googleSignIn
+    loginUser,
+    loginDoctor,
+    googleSignIn
   };

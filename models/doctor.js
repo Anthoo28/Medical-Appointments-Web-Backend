@@ -8,6 +8,10 @@ const doctorSchema = new Schema({
         required:[true,'DNI is required'],
         unique:true
     },
+    status:{
+        type:Boolean,
+        default:true
+    },
     CMP:{
         type: String,
         required:[true,'CPM is required'],
@@ -57,7 +61,7 @@ const doctorSchema = new Schema({
     address:{
         type:String,
         required:[true,'Address is required']
-    },
+    }
 
 
 });
@@ -68,4 +72,4 @@ doctorSchema.methods.toJSON = function(){
     return doctor;
 }
 
-modeule.exports = model('Doctor',doctorSchema);
+module.exports = model('Doctor',doctorSchema);
