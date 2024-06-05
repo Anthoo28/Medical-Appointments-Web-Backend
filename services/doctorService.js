@@ -50,6 +50,7 @@ class DoctorService {
         }
     }
 
+
     async deleteDoctor(dni) {
         try {
             const doctor = await Doctor.findOne({ dni: dni, status: true });
