@@ -41,7 +41,7 @@ const patientSchema = new Schema({
       },
       status: {
         type: Boolean,
-        default: false,
+        default: true,
       },
 
 });
@@ -55,4 +55,4 @@ patientSchema.methods.toJSON = function(){
 }
 
 
-moduele.export= model('Patient',patientSchema);
+module.exports= model('Patient',patientSchema);
