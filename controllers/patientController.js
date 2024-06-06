@@ -1,6 +1,7 @@
 const PatientService = require('../services/patientService');
-
+const UserService = require('../services/userService'); 
 const patientService = new PatientService();
+const userService = new UserService();
 
 const getPatients = async (req, res) => {
     try {
@@ -21,12 +22,16 @@ const getPatientByDni = async (req, res)=>{
 }
 
 
-const createPatient = async (req, res) => {
+async function createPatient(req, res) {
     try {
-        await patientService.createPatient(req.body);
-        res.status(200).json("Patient created successfully");
+        const newPatient = await patientService.createPatient(req.body);
+        return res.status(201).json(newPatient);
     } catch (error) {
-        res.status(500).json({ error: 'Error creating patient'});
+        console.error('Error creating patient:', error);
+        if (error.message.includes('DNI already registered')) {
+            return res.status(400).json({ error: 'DNI already registered', details: error.message });
+        }
+        return res.status(500).json({ error: 'Error creating patient', details: error.message });
     }
 }
 

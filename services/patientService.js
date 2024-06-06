@@ -1,5 +1,6 @@
 const Patient = require('../models/patient');
 const PatientDto = require('../dto/patient');
+const User = require('../models/user');
 
 class PatientService {
     constructor() {}
@@ -27,11 +28,19 @@ class PatientService {
 
     async createPatient(patientData){
         try {
+            // Verificar si el DNI ya está registrado como usuario
+            const existingUser = await User.findOne({ dni: patientData.dni });
+            if (existingUser) {
+                throw new Error('DNI already registered as user');
+            } 
+            // Si no hay un usuario con el mismo DNI, crear el paciente
             const patient = new Patient(patientData);
             await patient.save();
             return new PatientDto(patient);
         } catch (error) {
-            
+            // Manejar el error
+            console.error('Error creating patient:', error);
+            throw new Error('Error creating patient: ' + error.message);
         }
     }
     
