@@ -8,7 +8,7 @@ const appointmentSchema = new Schema({
         required:[true,'Reason is required'],
     },
 
-    Date:{
+    date:{
         type:Date,
         required:[true,'Date is required'],
     },
@@ -19,40 +19,27 @@ const appointmentSchema = new Schema({
     },
     status:{
         type:Boolean,
-        default:false,
+        default:true,
         required:true
     },
 
     user:{
-        type:Schema.Types.ObjectId,
+        type: String, 
         ref:'User',
         required:true
     },
 
     patient:{
-        type:Schema.Types.ObjectId,
-        ref:'Patient',
-        required:true
+        type: String, 
+        ref:'Patient'
     },
 
     doctor:{
-        type:Schema.Types.ObjectId,
+        type: String, 
         ref:'Doctor',
         required:true
-    },
+    }
 
-    specialty:{
-        type:Schema.Types.ObjectId,
-        ref:'Specialty',
-        required:true
-    },
-
-    schedule:{
-        type:Schema.Types.ObjectId,
-        ref:'Schedule',
-        required:true
-    },
-   
     
 
 });

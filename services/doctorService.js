@@ -64,6 +64,29 @@ class DoctorService {
             throw new Error('Error deleting doctor');
         }
     }
+
+    async isTimeAvailableForDoctor(dni, time) {
+        try {
+            const doctor = await Doctor.findOne({ dni: dni });
+            return !doctor.busyTimes.includes(time);
+        } catch (error) {
+            throw new Error('Error checking availability');
+        }
+    }
+
+    async reserveTimeForDoctor(dni, time) {
+        try {
+            const doctor = await Doctor.findOne({ dni: dni });
+            if (!doctor) {
+                throw new Error('Doctor not found');
+            }
+            doctor.busyTimes.push(time); // Aquí añadimos el tiempo a los horarios ocupados
+            await doctor.save(); // Guardamos los cambios en el doctor
+        } catch (error) {
+            throw new Error(`Error reserving time: ${error.message}`);
+        }
+    }
+    
 }
 
 module.exports = DoctorService;
