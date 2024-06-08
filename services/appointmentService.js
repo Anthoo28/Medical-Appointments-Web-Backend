@@ -61,6 +61,17 @@ class AppointmentService {
                 throw new Error('Selected time is not available for the doctor');
             }
     
+            // Verificar si ya existe una cita para el mismo usuario, médico, fecha y hora
+            const existingAppointment = await Appointment.findOne({
+                user: appointmentData.user,
+                doctor: doctor.dni,
+                date: appointmentDate,
+                time: appointmentData.time
+            });
+            if (existingAppointment) {
+                throw new Error('Appointment already exists');
+            }
+    
             // Crear la cita con el DNI del médico
             const appointment = new Appointment({
                 ...appointmentData,
