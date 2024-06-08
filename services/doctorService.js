@@ -64,28 +64,45 @@ class DoctorService {
             throw new Error('Error deleting doctor');
         }
     }
-
-    async isTimeAvailableForDoctor(dni, time) {
-        try {
-            const doctor = await Doctor.findOne({ dni: dni });
-            return !doctor.busyTimes.includes(time);
-        } catch (error) {
-            throw new Error('Error checking availability');
-        }
-    }
-
-    async reserveTimeForDoctor(dni, time) {
+    async isTimeAvailableForDoctor(dni, date, time) {
         try {
             const doctor = await Doctor.findOne({ dni: dni });
             if (!doctor) {
                 throw new Error('Doctor not found');
             }
-            doctor.busyTimes.push(time); // Aquí añadimos el tiempo a los horarios ocupados
-            await doctor.save(); // Guardamos los cambios en el doctor
+            // Verificar si el día y el tiempo están incluidos en los horarios ocupados del médico
+            return !doctor.busyTimes.some(appointment => appointment.date === date && appointment.time === time);
+        } catch (error) {
+            throw new Error(`Error checking availability: ${error.message}`);
+        }
+    }
+    
+    async reserveTimeForDoctor(dni, date, time) {
+        try {
+            const doctor = await Doctor.findOne({ dni: dni });
+            if (!doctor) {
+                throw new Error('Doctor not found');
+            }
+    
+            // Verificar si el día y el tiempo ya están reservados antes de agregarlos
+            const existingAppointment = doctor.busyTimes.find(appointment => appointment.date.toString() === date.toString() && appointment.time === time);
+            if (!existingAppointment) {
+                // Convertir la cadena de fecha en un objeto Date
+                const dateObject = new Date(date);
+                // Actualizar el médico con el nuevo horario ocupado
+                doctor.busyTimes.push({ date: dateObject, time });
+                await doctor.save(); // Guardar los cambios en el doctor
+            }
         } catch (error) {
             throw new Error(`Error reserving time: ${error.message}`);
         }
     }
+    
+    
+    
+    
+    
+    
     
 }
 
