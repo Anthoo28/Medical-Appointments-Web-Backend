@@ -51,8 +51,12 @@ const doctorSchema = new Schema({
         type:String,
         required:[true,'Phone is required']
     },
-    busyTimes: [String],
-    
+    busyTimes: [
+        {
+            date: String,
+            time: String
+        }
+    ],
     specialty:[{
         type:Schema.Types.ObjectId,
         ref:'Specialty',

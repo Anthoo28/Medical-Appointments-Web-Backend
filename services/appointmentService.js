@@ -33,11 +33,11 @@ class AppointmentService {
         }
     }
     
-    
     async createAppointment(appointmentData) {
         try {
-            const dateParts = appointmentData.date.split('-');
-            const appointmentDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+            // Convertir la cadena de fecha en un objeto Date
+            const appointmentDate = new Date(appointmentData.date);
+    
             const dayOfWeek = appointmentDate.getDay();
             const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
     
@@ -48,7 +48,6 @@ class AppointmentService {
                 throw new Error('Selected time is not available');
             }
             
-    
             // Obtener el médico por DNI
             const doctorService = new DoctorService();
             const doctor = await doctorService.getDoctorByDni(appointmentData.doctor);
@@ -57,7 +56,7 @@ class AppointmentService {
             }
     
             // Verificar si el horario está disponible para el médico
-            const isAvailableForDoctor = await doctorService.isTimeAvailableForDoctor(doctor.dni, appointmentData.time);
+            const isAvailableForDoctor = await doctorService.isTimeAvailableForDoctor(doctor.dni, appointmentData.date, appointmentData.time);
             if (!isAvailableForDoctor) {
                 throw new Error('Selected time is not available for the doctor');
             }
@@ -65,19 +64,21 @@ class AppointmentService {
             // Crear la cita con el DNI del médico
             const appointment = new Appointment({
                 ...appointmentData,
+                date: appointmentDate, // Utilizar el objeto Date para la fecha
                 doctor: doctor.dni, // Almacenar el DNI del médico en lugar de su ID
             });
     
             await appointment.save();
     
             // Reservar el tiempo para el médico
-            await doctorService.reserveTimeForDoctor(doctor.dni, appointmentData.time);
+            await doctorService.reserveTimeForDoctor(doctor.dni, appointmentData.date, appointmentData.time);
     
             return new AppointmentDto(appointment);
         } catch (error) {
             throw new Error(`Error creating appointment: ${error.message}`);
         }
     }
+    
     
     
 
