@@ -19,6 +19,15 @@ const getAppointmentById = async (req, res) => {
     }
 }
 
+const getAppointmentByIdDoctor = async (req, res) => {
+    try {
+        const appointments = await appointmentService.getAppointmentByIdDcotor(req.params.id);
+        res.status(200).json(appointments);   
+    } catch (error) {
+        res.status(500).json({ error: 'Error getting appointment by ID', details: error.message });
+    }
+}
+
 const createAppointment = async (req, res) => {
     try {
         const appointmentData = req.body;
@@ -39,4 +48,4 @@ const deleteAppointment = async (req, res) => {
     }
 }
 
-module.exports = { getAppointments, getAppointmentById, createAppointment, deleteAppointment };
+module.exports = { getAppointments, getAppointmentById, createAppointment, deleteAppointment,getAppointmentByIdDoctor };
