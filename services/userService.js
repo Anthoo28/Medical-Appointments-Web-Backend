@@ -30,6 +30,17 @@ class UserService {
             throw new Error('Error getting user by Dni');
         }
     }
+    async getUserEmail(dni){
+        try {
+            const user = await User.findOne({ dni: dni, status: true });
+            if (!user) {
+                throw new Error('User not found');
+            }
+            return user.email;
+        } catch (error) {
+            throw new Error('Error getting user by Dni');
+        }
+    }
 
     // Método para crear un usuario
     async createUser(userData){
