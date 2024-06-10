@@ -21,9 +21,9 @@ class AppointmentService {
         }
     }
 
-    async getAppointmentById(id) {
+    async getAppointmentById(dni) {
         try {
-            const appointment = await Appointment.findOne({ _id: id });
+            const appointment = await Appointment.findOne({ user: dni });
             if (!appointment) {
                 throw new Error('Appointment not found');
             }
@@ -32,6 +32,8 @@ class AppointmentService {
             throw new Error('Error getting appointment by id');
         }
     }
+
+
     
     async createAppointment(appointmentData) {
         try {
