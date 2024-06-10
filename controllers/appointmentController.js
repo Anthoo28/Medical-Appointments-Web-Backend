@@ -12,8 +12,8 @@ const getAppointments = async (req, res) => {
 
 const getAppointmentById = async (req, res) => {
     try {
-        const appointment = await appointmentService.getAppointmentById(req.params.id);
-        res.status(200).json(appointment);   
+        const appointments = await appointmentService.getAppointmentById(req.params.id);
+        res.status(200).json(appointments);   
     } catch (error) {
         res.status(500).json({ error: 'Error getting appointment by ID', details: error.message });
     }

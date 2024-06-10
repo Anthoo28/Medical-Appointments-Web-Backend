@@ -23,11 +23,11 @@ class AppointmentService {
 
     async getAppointmentById(dni) {
         try {
-            const appointment = await Appointment.findOne({ user: dni });
-            if (!appointment) {
+            const appointments = await Appointment.find({ user: dni });
+            if (!appointments) {
                 throw new Error('Appointment not found');
             }
-            return new AppointmentDto(appointment);
+            return appointments.map(appointment => new AppointmentDto(appointment));
         } catch (error) {
             throw new Error('Error getting appointment by id');
         }
