@@ -44,7 +44,24 @@ class PatientService {
         }
     }
     
-    async updatePatient(dni, patientData){}
+    async updatePatient(dni, patientData) {
+        try {
+            // Buscar al paciente por su DNI
+            const patient = await Patient.findOneAndUpdate({ dni: dni, status: true }, patientData, { new: true });
+            if (!patient) {
+                throw new Error('Patient not found');
+            }
+    
+            // Guardar los cambios en la base de datos
+            await patient.save();
+    
+            // Devolver al paciente actualizado como un DTO
+            return new PatientDto(patient);
+        } catch (error) {
+            throw new Error('Error updating patient: ' + error.message);
+        }
+    }
+    
 
     async deletePatient(dni){
       try {

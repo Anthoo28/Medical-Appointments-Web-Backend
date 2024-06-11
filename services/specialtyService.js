@@ -49,29 +49,27 @@ class SpecialtyService{
 
     async updateSpecialty(id, specialtyData) {
         try {
-            const specialty = await Specialty.findById({ _id: id, status: true });
+            // Buscar la especialidad por su ID
+            const specialty = await Specialty.findByIdAndUpdate(id, specialtyData, { new: true, status: true });
             if (!specialty) {
                 throw new Error('Specialty not found');
             }
-
-            // Actualizar solo los campos presentes en specialtyData
-            for (const [key, value] of Object.entries(specialtyData)) {
-                // Verificar si el campo existe en specialty
-                 if (specialty[key] !== undefined) {
-                    if(key==='name'){
-                        specialty[key]=value.toUpperCase();
-                    }else{
-                    specialty[key] = value;
-                }
-                }
+    
+            // Actualizar los campos de la especialidad con los datos proporcionados
+            if (specialtyData.name) {
+                specialty.name = specialtyData.name.toUpperCase();
             }
-            await specialty.save();
-            return new SpecialtyDto(specialty);
             
+            // Guardar los cambios en la base de datos
+            await specialty.save();
+    
+            // Devolver la especialidad actualizada como un DTO
+            return new SpecialtyDto(specialty);
         } catch (error) {
             throw new Error('Error updating specialty');
         }
     }
+    
 
 
     async deleteSpecialty(id){
