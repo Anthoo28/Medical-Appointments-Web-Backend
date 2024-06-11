@@ -62,22 +62,25 @@ class UserService {
 
     async updateUser(dni, userData) {
         try {
-            // Buscar el usuario por su DNI y que esté activo
+            // Buscar el usuario por su DNI
             const user = await User.findOne({ dni: dni, status: true });
             if (!user) {
                 throw new Error('User not found');
             }
             
-            // Actualizar solo los campos presentes en userData
-            for (const [key, value] of Object.entries(userData)) {
-                if (user[key] !== undefined) {
-                    user[key] = value;
-                }
-            }       
+            // Actualizar los campos del usuario con los datos proporcionados
+            Object.assign(user, userData);
+            
+            // Si se proporcionó una nueva contraseña, hashearla antes de guardarla
+            if (userData.password) {
+                const salt = bcrypt.genSaltSync();
+                user.password = bcrypt.hashSync(userData.password, salt);
+            }
+            
             // Guardar los cambios en la base de datos
             await user.save();
             
-            // Devolver el usuario actualizado como DTO
+            // Devolver el usuario actualizado como un DTO
             return new UserDto(user);
         } catch (error) {
             throw new Error('Error updating user');
