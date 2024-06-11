@@ -50,6 +50,33 @@ class DoctorService {
         }
     }
 
+    async updateDoctor(dni, doctorData) {
+        try {
+            // Buscar el doctor por su DNI
+            const doctor = await Doctor.findOne({ dni: dni, status: true });
+            if (!doctor) {
+                throw new Error('Doctor not found');
+            }
+            
+            // Actualizar los campos del doctor con los datos proporcionados
+            Object.assign(doctor, doctorData);
+            
+            // Si se proporcionó una nueva contraseña, hashearla antes de guardarla
+            if (doctorData.password) {
+                const salt = bcrypt.genSaltSync();
+                doctor.password = bcrypt.hashSync(doctorData.password, salt);
+            }
+            
+            // Guardar los cambios en la base de datos
+            await doctor.save();
+            
+            // Devolver el doctor actualizado como un DTO
+            return new DoctorDto(doctor);
+        } catch (error) {
+            throw new Error('Error updating doctor');
+        }
+    }
+    
 
     async deleteDoctor(dni) {
         try {

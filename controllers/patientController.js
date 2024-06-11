@@ -35,7 +35,14 @@ async function createPatient(req, res) {
     }
 }
 
-const updatePatient = async (req, res) => {}
+const updatePatient = async (req, res) => {
+    try {
+        const updatedPatient = await patientService.updatePatient(req.params.dni, req.body);
+        return res.status(200).json(updatedPatient);
+    } catch (error) {
+        return res.status(500).json({ error: 'Error updating patient', details: error.message });
+    }
+}
 
 const deletePatient = async (req, res) => {
     try {
