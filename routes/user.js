@@ -88,7 +88,6 @@ router.delete(
   "/:dni",
   [
     validateJWT,
-    //hasRole("ADMIN_ROLE"),
     validateDNI(),
     dontExistUserDni(),
     validated,

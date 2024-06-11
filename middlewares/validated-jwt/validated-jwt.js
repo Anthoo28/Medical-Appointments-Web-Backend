@@ -18,7 +18,7 @@ const validateJWT = async (req = request, res = response, next) => {
         let userOrDoctor;
         if (role === 'DOCTOR_ROLE') {
             userOrDoctor = await Doctor.findOne({dni:dni});
-        } else if (role === 'USER_ROLE'){
+        } else if (role === 'USER_ROLE' || role === 'ADMIN_ROLE'){
             userOrDoctor = await User.findOne({dni:dni});
         }
 
