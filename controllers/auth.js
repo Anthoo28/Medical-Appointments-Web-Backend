@@ -29,7 +29,7 @@ const loginUser= async (req, res) => {
             });
         }
 
-        const token= await generateJWT(user.dni);
+        const token= await generateJWT(user.dni,user.role);
         res.json({
           user,
           token
@@ -68,7 +68,7 @@ const loginDoctor= async (req, res) => {
           });
       }
 
-      const token= await generateJWT(doctor.dni);
+      const token= await generateJWT(doctor.dni, doctor.role);
       res.json({
         doctor,
         token
@@ -85,61 +85,9 @@ const loginDoctor= async (req, res) => {
 
 
 
-const googleSignIn=async(req=request,res= response)=>{
-    const {id_token}= req.body;
-  
-  try {
-    const {email,name,img, lastname}= await googleVerify(id_token);
-    //reference
-    let user  = await User.findOne({email});
-    let i=11111113;
-    if(!user){
-      //crear user
-      const data ={
-        dni:i+1,
-        name,
-        lastname,
-        email,
-        password:':P',
-        img,
-        google: true,
-        role:'USER_ROLE',
-        bornDate: null,
-        phone: null,
-        address:null,
-        gender:null
-
-      };
-       user = new User(data);
-        user.save();
-    }
-    // user en db
-    if(!user.status){
-      return res.status(401).json({
-        msg:'User blocked contact with the admin'
-      });
-    }
-      //generar jwt
-      const token= await generateJWT(user.id);
-      res.json({
-        user,
-        token,
-       id_token
-      });
-  
-  } catch (error) {  
-    res.status(400).json({
-      ok:false,
-      msg: 'token no se pudo verificar'
-    });
-  }
-  
-  
-  }
 
 
   module.exports={
     loginUser,
-    loginDoctor,
-    googleSignIn
+    loginDoctor
   };

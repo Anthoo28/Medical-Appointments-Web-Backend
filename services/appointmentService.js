@@ -116,6 +116,8 @@ class AppointmentService {
             throw new Error(`Error creating appointment: ${error.message}`);
         }
     }
+
+    
     async deleteAppointment(id) {
         try {
             const appointment = await Appointment.findOne({ _id: id });

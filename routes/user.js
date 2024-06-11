@@ -27,19 +27,21 @@ const {
 } = require("../helpers/user-helpers/user-db-validators");
 
 const { requiredFields } = require("../helpers/required/required-fields");
-const { hasRole } = require("../middlewares/validated-roles");
+const { hasRole } = require("../middlewares/validated-roles/validated-roles");
 const { validateDNIU, validatePhoneU, validateBornDateU, validateGenderU } = require("../helpers/user-helpers/update");
+const { validateJWT } = require("../middlewares/validated-jwt/validated-jwt");
 
 //instanciar el router
 const router = Router();
 
 //obtener todos los usuarios
-router.get("/", getUsers);
+router.get("/",[validateJWT], getUsers);
 
 //obtener un usuario por su dni y validarlo
 router.get(
+ 
   "/:dni",
-  [validateDNI(), dontExistUserDni(), validated],
+  [ validateJWT],
   getUserByDni
 );
 
@@ -67,9 +69,10 @@ router.post(
 router.put(
   "/:dni",
   [
+    
+    validateJWT,
     validateDNIU(),
     validatePhoneU(),
-    validateBornDateU(),
     validateGenderU(),
     check("password", "The password must have at least 6 characters").isLength({
       min: 6,
@@ -84,6 +87,7 @@ router.put(
 router.delete(
   "/:dni",
   [
+    validateJWT,
     //hasRole("ADMIN_ROLE"),
     validateDNI(),
     dontExistUserDni(),

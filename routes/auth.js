@@ -20,10 +20,6 @@ router.post('/loginDoctor',[validateDNI(),
     
 
 
-router.post('/google',[ check('id_token',"it_token es necesario").not().isEmpty(),
-validated],googleSignIn);
-
-
 
 
 module.exports = router;
