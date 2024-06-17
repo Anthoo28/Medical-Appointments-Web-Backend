@@ -27,7 +27,7 @@ const {
 } = require("../helpers/user-helpers/user-db-validators");
 
 const { requiredFields } = require("../helpers/required/required-fields");
-const { hasRole } = require("../middlewares/validated-roles/validated-roles");
+const { hasRole, isAdminRole, isDoctorRole } = require("../middlewares/validated-roles/validated-roles");
 const { validateDNIU, validatePhoneU, validateBornDateU, validateGenderU } = require("../helpers/user-helpers/update");
 const { validateJWT } = require("../middlewares/validated-jwt/validated-jwt");
 
@@ -35,13 +35,13 @@ const { validateJWT } = require("../middlewares/validated-jwt/validated-jwt");
 const router = Router();
 
 //obtener todos los usuarios
-router.get("/",[validateJWT], getUsers);
+router.get("/",[validateJWT, hasRole('ADMIN_ROLE','DOCTOR_ROLE')], getUsers);
 
 //obtener un usuario por su dni y validarlo
 router.get(
  
   "/:dni",
-  [ validateJWT],
+  [ validateJWT, hasRole('ADMIN_ROLE','DOCTOR_ROLE','USER_ROLE')],
   getUserByDni
 );
 
@@ -71,6 +71,7 @@ router.put(
   [
     
     validateJWT,
+    hasRole('ADMIN_ROLE','USER_ROLE'),
     validateDNIU(),
     validatePhoneU(),
     validateGenderU(),
@@ -88,6 +89,7 @@ router.delete(
   "/:dni",
   [
     validateJWT,
+    isAdminRole,
     validateDNI(),
     dontExistUserDni(),
     validated,

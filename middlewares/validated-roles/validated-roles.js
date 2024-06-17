@@ -1,46 +1,60 @@
-const { response, request } = require("express");
-const jwt = require('jsonwebtoken');
-const Doctor = require("../../models/doctor");
-const User = require("../../models/user");
+const { response } = require("express")
 
-const validateJWT = async (req = request, res = response, next) => {
-    const token = req.header('x-token');
-    if (!token) {
-        return res.status(401).json({
-            msg: "No hay token en la petición"
+const isAdminRole=(req,res=response, next)=>{
+
+    if(!req.user){
+        return res.status(500).json({
+            msg:'se quiere verificar el rol sin validar el token primero'
         });
     }
 
-    try {
-        const { dni, role } = jwt.verify(token, process.env.SECRETORPUBLICKEY);
+    const {role, name}= req.user;
 
-        let userOrDoctor;
-        if (role === 'DOCTOR_ROLE') {
-            userOrDoctor = await Doctor.findOne({ dni });
-        } else if (role === 'USER_ROLE') {
-            userOrDoctor = await User.findOne({ dni });
-        }
+    if(role !== 'ADMIN_ROLE'){
+        return res.status(401).json({
+            msg: `${name} no es admin- no puede hacer esto`
+        })
+    }
 
-        if (!userOrDoctor) {
-            return res.status(401).json({
-                msg: "Token no válido - usuario/doctor no existe en BD"
-            });
-        }
+    next();
+}
 
-        if (!userOrDoctor.status) {
-            return res.status(401).json({
-                msg: `Token no válido - ${role} borrado`
-            });
-        }
-
-        req.user = userOrDoctor;
-        next();
-    } catch (error) {
-        console.log(error);
-        res.status(401).json({
-            msg: "Token no válido"
+const isDoctorRole=(req,res=response, next)=>{
+    if(!req.doctor){
+        return res.status(500).json({
+            msg:'se quiere verificar el rol sin validar el token primero'
         });
+    }
+    const {role, name}= req.doctor;
+    if(role !== 'DOCTOR_ROLE'){
+        return res.status(401).json({
+            msg: `${name} no es doctor- no puede hacer esto`
+        })
+    
+}
+next();
+    
+}
+
+
+const hasRole=(...roles )=>{
+    return (req,res=response,next)=>{
+        if(!req.user){
+            return res.status(500).json({
+                msg:'se quiere verificar el rol sin validar el token primero'
+            });
+        }
+        if(!roles.includes(req.user.role)){
+            return res.status(401).json({
+                msg:`El servicio requiere uno de estos roles ${roles}`
+            })
+        }
+        next();
     }
 }
 
-module.exports = { validateJWT };
+module.exports={
+    isAdminRole,
+    isDoctorRole,
+    hasRole
+}
