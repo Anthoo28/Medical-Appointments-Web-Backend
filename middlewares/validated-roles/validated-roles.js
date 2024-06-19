@@ -39,6 +39,5 @@ const hasRole=(...roles )=>{
 
 module.exports={
     isAdminRole,
-    isDoctorRole,
     hasRole
 }
