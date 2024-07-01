@@ -19,22 +19,7 @@ const isAdminRole=(req,res=response, next)=>{
     next();
 }
 
-const isDoctorRole=(req,res=response, next)=>{
-    if(!req.doctor){
-        return res.status(500).json({
-            msg:'se quiere verificar el rol sin validar el token primero'
-        });
-    }
-    const {role, name}= req.doctor;
-    if(role !== 'DOCTOR_ROLE'){
-        return res.status(401).json({
-            msg: `${name} no es doctor- no puede hacer esto`
-        })
-    
-}
-next();
-    
-}
+
 
 
 const hasRole=(...roles )=>{
@@ -55,6 +40,5 @@ const hasRole=(...roles )=>{
 
 module.exports={
     isAdminRole,
-    isDoctorRole,
     hasRole
 }

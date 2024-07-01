@@ -18,7 +18,8 @@ class Server {
             doctor: '/api/doctor',
             swagger: '/api-docs',
             patient:'/api/patient',
-            appointment:'/api/appointment'
+            appointment:'/api/appointment',
+            description:'/api/description'
         }
 
         // Conectar a base de datos
@@ -63,7 +64,7 @@ class Server {
         this.app.use('/api/doctor', require('../routes/doctor'));
         this.app.use('/api/patient', require('../routes/patient'));
         this.app.use('/api/appointment', require('../routes/appointment'));
-        
+        this.app.use('/api/prescription', require('../routes/prescription'));
         // Configura Swagger en la ruta especificada
         this.app.use(this.paths.swagger, swaggerUi.serve, swaggerUi.setup(swaggerDoc));
     }

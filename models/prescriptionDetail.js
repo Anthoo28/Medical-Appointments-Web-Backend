@@ -1,31 +1,22 @@
 const { Schema, model } = require("mongoose");
 
 const prescriptionDetailSchema = new Schema({
-  prescription: {
-    type: Schema.Types.ObjectId,
-    ref: "Prescription",
+  medicine: {
+    type: String,
     required: true,
   },
-  medicines: [
-    {
-      medicine: {
-        type: String,
-        required: true,
-      },
-      dosage: {
-        type: String,
-        required: true,
-      },
-      frequency: {
-        type: String,
-        required: true,
-      },
-      duration: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  dosage: {
+    type: String,
+    required: true,
+  },
+  frequency: {
+    type: String,
+    required: true,
+  },
+  duration: {
+    type: String,
+    required: true,
+  },
 });
 
 prescriptionDetailSchema.methods.toJSON = function () {
@@ -34,4 +25,4 @@ prescriptionDetailSchema.methods.toJSON = function () {
 
 }
 
-module.exports = model("PrescriptionDetail", prescriptionDetailSchema);
+module.exports = { prescriptionDetailSchema };
