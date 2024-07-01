@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const { prescriptionDetailSchema } = require("../models/prescriptionDetail");
 
 const prescriptionSchema = new Schema({
   date: {
@@ -6,31 +7,25 @@ const prescriptionSchema = new Schema({
     required: true,
     default: Date.now,
   },
-
-  user: {
-    type: Schema.Types.ObjectId(),
-    ref: "User",
-    required: true,
-  },
-  patient:{
-    type: Schema.Types.ObjectId(),
-    ref:'Patient',
-
+  status:{
+    type:Boolean,
+    default:true
   },
   doctor: {
-    type: Schema.Types.ObjectId(),
-    ref: "Doctor",
+    type: String,
+    required:true,
     required: true,
   },
 
   appointment: {
-    type: Schema.Types.ObjectId(),
+    type: Schema.Types.ObjectId,
     ref: "Appointment",
     required: true,
-  }
+  },
+  prescriptionDetails: [prescriptionDetailSchema],
   
-
 });
+
 
 prescriptionSchema.methods.toJSON = function () {
   const { __v, ...prescription } = this.toObject();
