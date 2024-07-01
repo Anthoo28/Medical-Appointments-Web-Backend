@@ -21,7 +21,6 @@ const isAdminRole=(req,res=response, next)=>{
 
 
 
-
 const hasRole=(...roles )=>{
     return (req,res=response,next)=>{
         if(!req.user){
