@@ -1,5 +1,6 @@
 class PrescriptionDto {
     constructor(prescription) {
+      this.id = prescription._id; 
       this.date = prescription.date || new Date();
       this.doctor = prescription.doctor;
       this.appointment = prescription.appointment;
